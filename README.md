@@ -29,7 +29,7 @@ We release **Qwen2.5-Omni**, the new flagship end-to-end multimodal model in the
 
 ## Contents <!-- omit in toc -->
 
-- [OverView](#overview)
+- [Overview](#overview)
   - [Introduction](#introduction)
   - [Key Features](#key-features)
   - [Model Architecture](#model-architecture)
