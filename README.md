@@ -994,7 +994,7 @@ Without deployment, you can experience online web demo directly by visiting our 
 
 ### Launch Local Web UI Demo
 
-In this section, we provide instructions for users to build a web-based user interface (UI) demo. This UI demo allows users to interact with a predefined model or application through a web browser. Follow the steps below to get started or you can lanch the web demo directly from our [official docker image](#-docker).
+In this section, we provide instructions for users to build a web-based user interface (UI) demo. This UI demo allows users to interact with a predefined model or application through a web browser. Follow the steps below to get started or you can launch the web demo directly from our [official docker image](#-docker).
 
 #### Installation
 
