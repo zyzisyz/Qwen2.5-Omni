@@ -58,7 +58,7 @@ Qwen2.5-Omni is an end-to-end multimodal model designed to perceive diverse moda
 
 ### Key Features
 
-* **Omni and Novel Architecture**: We propose Thinker-Talker architecture, an end-to-end multimodal model designed to perceive diverse modalities, including text, images, audio, and video, while simultaneously generating text and natural speech responses in a streaming manner. We prpose a novel position embedding, named TMRoPE (Time-aligned Multimodal RoPE), to synchronize the timestamps of video inputs with audio.
+* **Omni and Novel Architecture**: We propose Thinker-Talker architecture, an end-to-end multimodal model designed to perceive diverse modalities, including text, images, audio, and video, while simultaneously generating text and natural speech responses in a streaming manner. We propose a novel position embedding, named TMRoPE (Time-aligned Multimodal RoPE), to synchronize the timestamps of video inputs with audio.
 
 * **Real-Time Voice and Video Chat**: Architecture Designed for fully real-time interactions, supporting chunked input and immediate output.
 
@@ -867,14 +867,14 @@ text_ids = model.generate(**inputs, return_audio=False)
 ```
 
 #### Change voice type of output audio
-Qwen2.5-Omni supports the ability to change the voice of the output audio. The `"Qwen/Qwen2.5-Omni-7B"` checkpoint support two voice types as follow:
+Qwen2.5-Omni supports the ability to change the voice of the output audio. The `"Qwen/Qwen2.5-Omni-7B"` checkpoint supports two voice types as follows:
 
 | Voice Type | Gender | Description |
 |------------|--------|-------------|
 | Chelsie    | Female | A honeyed, velvety voice that carries a gentle warmth and luminous clarity.|
 | Ethan      | Male   | A bright, upbeat voice with infectious energy and a warm, approachable vibe.|
 
-Users can use the `spk` parameter of `generate` function to specify the voice type. By defalut, if `spk` is not specified, the default voice type is `Chelsie`.
+Users can use the `spk` parameter of `generate` function to specify the voice type. By default, if `spk` is not specified, the default voice type is `Chelsie`.
 
 ```python
 text_ids, audio = model.generate(**inputs, spk="Chelsie")
@@ -1030,7 +1030,7 @@ After running the command, you’ll see a link generated in the terminal similar
 Running on local: http://127.0.0.1:7860/
 ```
 
-Copy this link and paste it into your browser to access the web UI, where you can interact with the model by inputting text, uploading audios/images/videos, change voice type or using any other provided functionalities.
+Copy this link and paste it into your browser to access the web UI, where you can interact with the model by inputting text, uploading audios/images/videos, changing voice type or using any other provided functionalities.
 
 
 ### Real-Time Interaction
