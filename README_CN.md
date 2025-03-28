@@ -9,7 +9,7 @@
 <p>
 
 <p align="center">
-        💜 <a href="https://chat.qwenlm.ai/"><b>Qwen Chat</b></a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/collections/Qwen/qwen25-omni-67de1e5f0f9464dc6314b36e">Hugging Face</a>&nbsp&nbsp | &nbsp&nbsp🤖 <a href="https://modelscope.cn/collections/Qwen25-Omni-a2505ce0d5514e">ModelScope</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://qwenlm.github.io/blog/qwen2.5-omni/">Blog</a>&nbsp&nbsp | &nbsp&nbsp📚 <a href="https://github.com/QwenLM/Qwen2.5-Omni/tree/main/cookbooks">Cookbooks</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://github.com/QwenLM/Qwen2.5-Omni/tree/main/assets/Qwen2.5_Omni.pdf">Paper</a>&nbsp&nbsp
+        💜 <a href="https://chat.qwenlm.ai/"><b>Qwen Chat</b></a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/collections/Qwen/qwen25-omni-67de1e5f0f9464dc6314b36e">Hugging Face</a>&nbsp&nbsp | &nbsp&nbsp🤖 <a href="https://modelscope.cn/collections/Qwen25-Omni-a2505ce0d5514e">ModelScope</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://qwenlm.github.io/blog/qwen2.5-omni/">Blog</a>&nbsp&nbsp | &nbsp&nbsp📚 <a href="https://github.com/QwenLM/Qwen2.5-Omni/tree/main/cookbooks">Cookbooks</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://arxiv.org/abs/2503.20215">Paper</a>&nbsp&nbsp
 <br>
 🖥️ <a href="https://modelscope.cn/studios/Qwen/Qwen2.5-Omni-Demo">Demo</a>&nbsp&nbsp | &nbsp&nbsp💬 <a href="https://github.com/QwenLM/Qwen/blob/main/assets/wechat.png">WeChat (微信)</a>&nbsp&nbsp | &nbsp&nbsp🫨 <a href="https://discord.gg/CV4E9rpNSD">Discord</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://help.aliyun.com/zh/model-studio/user-guide/qwen-omni">API</a>
 <!-- &nbsp&nbsp | &nbsp&nbsp🖥️ <a href="https://gallery.pai-ml.com/#/preview/deepLearning/cv/qwen2.5-vl">PAI-DSW</a> -->
@@ -631,7 +631,7 @@ Qwen2.5-Omni在包括图像，音频，音视频等各种模态下的表现都�
 接下来，我们将提供如何在🤖 ModelScope和🤗 Transformers上使用 Qwen2.5-Omni. 由于Qwen2.5-Omni的代码在Hugging Face transformers中目前处于未合并阶段，尚未并入主分支，我们建议您从源代码构建：
 ```
 pip uninstall transformers
-pip install git+https://github.com/huggingface/transformers@3a1ead0aabed473eafe527915eea8c197d424356
+pip install git+https://github.com/huggingface/transformers@f742a644ca32e65758c3adb36225aef1731bd2a8
 pip install accelerate
 ```
 否则您可能会遇到以下错误：
@@ -687,14 +687,17 @@ conversation = [
     },
 ]
 
+# set use audio in video
+USE_AUDIO_IN_VIDEO = True
+
 # Preparation for inference
 text = processor.apply_chat_template(conversation, add_generation_prompt=True, tokenize=False)
-audios, images, videos = process_mm_info(conversation, use_audio_in_video=True)
-inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True)
+audios, images, videos = process_mm_info(conversation, use_audio_in_video=USE_AUDIO_IN_VIDEO)
+inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 inputs = inputs.to(model.device).to(model.dtype)
 
 # Inference: Generation of the output text and audio
-text_ids, audio = model.generate(**inputs, use_audio_in_video=True)
+text_ids, audio = model.generate(**inputs, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 
 text = processor.batch_decode(text_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
 print(text)
@@ -797,15 +800,18 @@ conversation4 = [
 # Combine messages for batch processing
 conversations = [conversation1, conversation2, conversation3, conversation4]
 
+# set use audio in video
+USE_AUDIO_IN_VIDEO = True
+
 # Preparation for batch inference
 text = processor.apply_chat_template(conversations, add_generation_prompt=True, tokenize=False)
-audios, images, videos = process_mm_info(conversations, use_audio_in_video=True)
+audios, images, videos = process_mm_info(conversations, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 
-inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True)
+inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 inputs = inputs.to(model.device).to(model.dtype)
 
 # Batch Inference
-text_ids = model.generate(**inputs, use_audio_in_video=True, return_audio=False)
+text_ids = model.generate(**inputs, use_audio_in_video=USE_AUDIO_IN_VIDEO, return_audio=False)
 text = processor.batch_decode(text_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
 print(text)
 ```
@@ -833,10 +839,15 @@ print(text)
 audios, images, videos = process_mm_info(conversations, use_audio_in_video=True)
 ```
 ```python
-# 第二处，在模型推理中
+# 第二处，在模型处理中
+inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", 
+                   padding=True, use_audio_in_video=True)
+```
+```python
+# 第三处，在模型推理中
 text_ids, audio = model.generate(**inputs, use_audio_in_video=True)
 ```
-值得注意的是，在多轮对话过程中，`use_audio_in_video`参数在两个地方必须设置为相同的值，否则可能会出现非预期的结果。
+值得注意的是，在多轮对话过程中，`use_audio_in_video`参数在这几个地方必须设置为相同的值，否则可能会出现非预期的结果。
 
 #### 是否使用音频输出
 模型支持文本和音频输出，如果用户不需要音频输出，可以在`from_pretrained`函数中设置`enable_audio_output=False`，此选项将节省约`~2GB`的GPU内存，但`generate`函数的`return_audio`选项将只能设置为`False`。
@@ -916,7 +927,7 @@ model = Qwen2_5OmniModel.from_pretrained(
 | [视频信息提取](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/video_information_extracting.ipynb) | 从视频流中获取信息。 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/video_information_extracting.ipynb) |
 | [关于音乐的全模态对话](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/omni_chatting_for_music.ipynb) | 和 Qwen2.5-Omni 通过音视频流的交互方式聊聊关于音乐的话题。 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/omni_chatting_for_music.ipynb) |
 | [关于数学的全模态对话](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/omni_chatting_for_math.ipynb) | 和 Qwen2.5-Omni 通过音视频流的交互方式聊聊关于数学的话题。 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/omni_chatting_for_math.ipynb) |
-| [对轮全模态对话](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/multi_round_omni_chatting.ipynb) |  与 Qwen2.5-Omni 进行了多轮全模态的音视频对话，提供最全面的能力演示。 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/multi_round_omni_chatting.ipynb) |
+| [多轮全模态对话](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/multi_round_omni_chatting.ipynb) |  与 Qwen2.5-Omni 进行了多轮全模态的音视频对话，提供最全面的能力演示。 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/QwenLM/Qwen2.5-Omni/blob/main/cookbooks/multi_round_omni_chatting.ipynb) |
 
 ### API 推理
 
@@ -1043,7 +1054,7 @@ Running on local: http://127.0.0.1:7860/
 
 ### 安装
 ```bash
-pip install git+https://github.com/huggingface/transformers@1d04f0d44251be5e236484f8c8a00e1c7aa69022
+pip install git+https://github.com/huggingface/transformers@d40f54fc2f1524458669048cb40a8d0286f5d1d2
 pip install accelerate
 pip install qwen-omni-utils
 git clone -b qwen2_omni_public_v1 https://github.com/fyabc/vllm.git
@@ -1126,16 +1137,24 @@ print(outputs[0].outputs[0].text)
 我们也在我们提供的[vLLM 仓库](https://github.com/fyabc/vllm/tree/qwen2_omni_public_v1/examples/offline_inference)中提供了一些示例代码:
 
 ```bash
-# vLLM engine v1 not supported yet
-export VLLM_USE_V1=0
-
 cd vllm
 
+# Audio + image + video
+python examples/offline_inference/qwen2_5_omni/only_thinker.py -q mixed_modalities
+
+# Read vision and audio inputs from a single video file
+# NOTE: V1 engine not supported yet.
+VLLM_USE_V1=0 python examples/offline_inference/qwen2_5_omni/only_thinker.py -q use_audio_in_video
+
+# Process audio inputs
 python examples/offline_inference/audio_language.py --model-type qwen2_5_omni
+
+# Process image inputs
 python examples/offline_inference/vision_language.py --modality image --model-type qwen2_5_omni
+
+# Process video inputs
 python examples/offline_inference/vision_language.py --modality video --model-type qwen2_5_omni
 ```
-
 
 ## 🐳 Docker
 
@@ -1155,7 +1174,7 @@ bash docker/docker_web_demo.sh --checkpoint /path/to/Qwen2.5-Omni-7B --flash-att
 ```
 
 
-<!-- ## 引用
+## 引用
 
 如果您在您的研究中感到 Qwen2.5-Omni 为您提供了帮助，期待您能给一个 Star :star: 和引用 :pencil: :)
 
@@ -1165,10 +1184,10 @@ bash docker/docker_web_demo.sh --checkpoint /path/to/Qwen2.5-Omni-7B --flash-att
 
 @article{Qwen2.5-Omni,
   title={Qwen2.5-Omni Technical Report},
-  author={},
-  journal={arXiv preprint arXiv:},
+  author={Jin Xu, Zhifang Guo, Jinzheng He, Hangrui Hu, Ting He, Shuai Bai, Keqin Chen, Jialin Wang, Yang Fan, Kai Dang, Bin Zhang, Xiong Wang, Yunfei Chu, Junyang Lin},
+  journal={arXiv preprint arXiv:2503.20215},
   year={2025}
 }
-``` -->
+```
 
 <br>

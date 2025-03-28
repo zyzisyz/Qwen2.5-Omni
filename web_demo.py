@@ -107,9 +107,9 @@ def _launch_demo(args, model, processor):
 
         text = processor.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
 
-        audios, images, videos = process_mm_info(messages, True)
+        audios, images, videos = process_mm_info(messages, use_audio_in_video=True)
 
-        inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True)
+        inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True, use_audio_in_video=True)
         inputs = inputs.to(model.device).to(model.dtype)
 
         text_ids, audio = model.generate(**inputs, spk=voice, use_audio_in_video=True)

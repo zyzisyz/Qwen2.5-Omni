@@ -9,7 +9,7 @@
 <p>
 
 <p align="center">
-        💜 <a href="https://chat.qwenlm.ai/"><b>Qwen Chat</b></a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/collections/Qwen/qwen25-omni-67de1e5f0f9464dc6314b36e">Hugging Face</a>&nbsp&nbsp | &nbsp&nbsp🤖 <a href="https://modelscope.cn/collections/Qwen25-Omni-a2505ce0d5514e">ModelScope</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://qwenlm.github.io/blog/qwen2.5-omni/">Blog</a>&nbsp&nbsp | &nbsp&nbsp📚 <a href="https://github.com/QwenLM/Qwen2.5-Omni/tree/main/cookbooks">Cookbooks</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://github.com/QwenLM/Qwen2.5-Omni/tree/main/assets/Qwen2.5_Omni.pdf">Paper</a>&nbsp&nbsp
+        💜 <a href="https://chat.qwenlm.ai/"><b>Qwen Chat</b></a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/collections/Qwen/qwen25-omni-67de1e5f0f9464dc6314b36e">Hugging Face</a>&nbsp&nbsp | &nbsp&nbsp🤖 <a href="https://modelscope.cn/collections/Qwen25-Omni-a2505ce0d5514e">ModelScope</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://qwenlm.github.io/blog/qwen2.5-omni/">Blog</a>&nbsp&nbsp | &nbsp&nbsp📚 <a href="https://github.com/QwenLM/Qwen2.5-Omni/tree/main/cookbooks">Cookbooks</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://arxiv.org/abs/2503.20215">Paper</a>&nbsp&nbsp
 <br>
 🖥️ <a href="https://huggingface.co/spaces/Qwen/Qwen2.5-Omni-7B-Demo ">Demo</a>&nbsp&nbsp | &nbsp&nbsp💬 <a href="https://github.com/QwenLM/Qwen/blob/main/assets/wechat.png">WeChat (微信)</a>&nbsp&nbsp | &nbsp&nbsp🫨 <a href="https://discord.gg/CV4E9rpNSD">Discord</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://help.aliyun.com/zh/model-studio/user-guide/qwen-omni">API</a>
 <!-- &nbsp&nbsp | &nbsp&nbsp🖥️ <a href="https://gallery.pai-ml.com/#/preview/deepLearning/cv/qwen2.5-vl">PAI-DSW</a> -->
@@ -60,7 +60,7 @@ Qwen2.5-Omni is an end-to-end multimodal model designed to perceive diverse moda
 
 * **Omni and Novel Architecture**: We propose Thinker-Talker architecture, an end-to-end multimodal model designed to perceive diverse modalities, including text, images, audio, and video, while simultaneously generating text and natural speech responses in a streaming manner. We propose a novel position embedding, named TMRoPE (Time-aligned Multimodal RoPE), to synchronize the timestamps of video inputs with audio.
 
-* **Real-Time Voice and Video Chat**: Architecture Designed for fully real-time interactions, supporting chunked input and immediate output.
+* **Real-Time Voice and Video Chat**: Architecture designed for fully real-time interactions, supporting chunked input and immediate output.
 
 * **Natural and Robust Speech Generation**: Surpassing many existing streaming and non-streaming alternatives, demonstrating superior robustness and naturalness in speech generation.
 
@@ -634,7 +634,7 @@ Below, we provide simple examples to show how to use Qwen2.5-Omni with 🤖 Mode
 The codes of Qwen2.5-Omni on Hugging Face Transformers are in pull request stage and not merged into the main branch yet. Therefore, you may need to build from source to use it with command:
 ```
 pip uninstall transformers
-pip install git+https://github.com/huggingface/transformers@3a1ead0aabed473eafe527915eea8c197d424356
+pip install git+https://github.com/huggingface/transformers@f742a644ca32e65758c3adb36225aef1731bd2a8
 pip install accelerate
 ```
 or you might encounter the following error:
@@ -690,14 +690,17 @@ conversation = [
     },
 ]
 
+# set use audio in video
+USE_AUDIO_IN_VIDEO = True
+
 # Preparation for inference
-text = processor.apply_chat_template(conversation, add_generation_prompt=True, tokenize=False)
-audios, images, videos = process_mm_info(conversation, use_audio_in_video=True)
-inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True)
+text = processor.apply_chat_template(conversation, add_generation_prompt=True, tokenize=Fals)
+audios, images, videos = process_mm_info(conversation, use_audio_in_video=USE_AUDIO_IN_VIDEO)
+inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 inputs = inputs.to(model.device).to(model.dtype)
 
 # Inference: Generation of the output text and audio
-text_ids, audio = model.generate(**inputs, use_audio_in_video=True)
+text_ids, audio = model.generate(**inputs, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 
 text = processor.batch_decode(text_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
 print(text)
@@ -800,15 +803,18 @@ conversation4 = [
 # Combine messages for batch processing
 conversations = [conversation1, conversation2, conversation3, conversation4]
 
+# set use audio in video
+USE_AUDIO_IN_VIDEO = True
+
 # Preparation for batch inference
 text = processor.apply_chat_template(conversations, add_generation_prompt=True, tokenize=False)
-audios, images, videos = process_mm_info(conversations, use_audio_in_video=True)
+audios, images, videos = process_mm_info(conversations, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 
-inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True)
+inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 inputs = inputs.to(model.device).to(model.dtype)
 
 # Batch Inference
-text_ids = model.generate(**inputs, use_audio_in_video=True, return_audio=False)
+text_ids = model.generate(**inputs, use_audio_in_video=USE_AUDIO_IN_VIDEO, return_audio=False)
 text = processor.batch_decode(text_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
 print(text)
 ```
@@ -836,10 +842,15 @@ In the process of multimodal interaction, the videos provided by users are often
 audios, images, videos = process_mm_info(conversations, use_audio_in_video=True)
 ```
 ```python
-# second place, in model inference
+# second place, in model processor
+inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", 
+                   padding=True, use_audio_in_video=True)
+```
+```python
+#  third place, in model inference
 text_ids, audio = model.generate(**inputs, use_audio_in_video=True)
 ```
-It is worth noting that during a multi-round conversation, the `use_audio_in_video` parameter in these two places must be set to the same, otherwise unexpected results will occur.
+It is worth noting that during a multi-round conversation, the `use_audio_in_video` parameter in these places must be set to the same, otherwise unexpected results will occur.
 
 #### Use audio output or not
 
@@ -874,7 +885,7 @@ Qwen2.5-Omni supports the ability to change the voice of the output audio. The `
 | Chelsie    | Female | A honeyed, velvety voice that carries a gentle warmth and luminous clarity.|
 | Ethan      | Male   | A bright, upbeat voice with infectious energy and a warm, approachable vibe.|
 
-Users can use the `spk` parameter of `generate` function to specify the voice type. By default, if `spk` is not specified, the default voice type is `Chelsie`.
+Users can use the `spk` parameter of `generate` function to specify the voice type. By defalut, if `spk` is not specified, the default voice type is `Chelsie`.
 
 ```python
 text_ids, audio = model.generate(**inputs, spk="Chelsie")
@@ -1043,7 +1054,7 @@ We recommend using vLLM for fast Qwen2.5-Omni deployment and inference. You need
 
 ### Installation
 ```bash
-pip install git+https://github.com/huggingface/transformers@1d04f0d44251be5e236484f8c8a00e1c7aa69022
+pip install git+https://github.com/huggingface/transformers@d40f54fc2f1524458669048cb40a8d0286f5d1d2
 pip install accelerate
 pip install qwen-omni-utils
 git clone -b qwen2_omni_public_v1 https://github.com/fyabc/vllm.git
@@ -1126,16 +1137,24 @@ print(outputs[0].outputs[0].text)
 We also provide some examples in [vLLM repo](https://github.com/fyabc/vllm/tree/qwen2_omni_public_v1/examples/offline_inference):
 
 ```bash
-# vLLM engine v1 not supported yet
-export VLLM_USE_V1=0
-
 cd vllm
 
+# Audio + image + video
+python examples/offline_inference/qwen2_5_omni/only_thinker.py -q mixed_modalities
+
+# Read vision and audio inputs from a single video file
+# NOTE: V1 engine not supported yet.
+VLLM_USE_V1=0 python examples/offline_inference/qwen2_5_omni/only_thinker.py -q use_audio_in_video
+
+# Process audio inputs
 python examples/offline_inference/audio_language.py --model-type qwen2_5_omni
+
+# Process image inputs
 python examples/offline_inference/vision_language.py --modality image --model-type qwen2_5_omni
+
+# Process video inputs
 python examples/offline_inference/vision_language.py --modality video --model-type qwen2_5_omni
 ```
-
 
 ## 🐳 Docker
 
@@ -1154,7 +1173,7 @@ To enable FlashAttention-2, use the following command:
 bash docker/docker_web_demo.sh --checkpoint /path/to/Qwen2.5-Omni-7B --flash-attn2
 ```
 
-<!-- ## Citation
+## Citation
 
 If you find our paper and code useful in your research, please consider giving a star :star: and citation :pencil: :)
 
@@ -1164,10 +1183,10 @@ If you find our paper and code useful in your research, please consider giving a
 
 @article{Qwen2.5-Omni,
   title={Qwen2.5-Omni Technical Report},
-  author={},
-  journal={arXiv preprint arXiv:},
+  author={Jin Xu, Zhifang Guo, Jinzheng He, Hangrui Hu, Ting He, Shuai Bai, Keqin Chen, Jialin Wang, Yang Fan, Kai Dang, Bin Zhang, Xiong Wang, Yunfei Chu, Junyang Lin},
+  journal={arXiv preprint arXiv:2503.20215},
   year={2025}
 }
-``` -->
+```
 
 <br>
