@@ -634,7 +634,7 @@ pip uninstall transformers
 pip install git+https://github.com/huggingface/transformers@3a1ead0aabed473eafe527915eea8c197d424356
 pip install accelerate
 ```
-or you might encounter the following error:
+否则您可能会遇到以下错误：
 ```
 KeyError: 'qwen2_5_omni'
 ```
