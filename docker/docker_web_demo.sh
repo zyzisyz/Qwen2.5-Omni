@@ -57,7 +57,7 @@ sudo docker pull ${IMAGE_NAME} || {
     exit 1
 }
 
-WEB_DEMO_ARGS="--server-port 8901 --server-name 127.0.0.1 -c /data/shared/Qwen/Qwen2.5-Omni-7B"
+WEB_DEMO_ARGS="--server-port 8901 --server-name 0.0.0.0 -c /data/shared/Qwen/Qwen2.5-Omni-7B"
 if [ ${FLASH_ATTN} -eq 1 ]; then
     WEB_DEMO_ARGS+=" --flash-attn2"
 fi
