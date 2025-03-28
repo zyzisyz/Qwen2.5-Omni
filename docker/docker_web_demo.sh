@@ -57,13 +57,13 @@ sudo docker pull ${IMAGE_NAME} || {
     exit 1
 }
 
-WEB_DEMO_ARGS="--server-port 80 --server-name 127.0.0.1 -c /data/shared/Qwen/Qwen2.5-Omni-7B"
+WEB_DEMO_ARGS="--server-port 8901 --server-name 127.0.0.1 -c /data/shared/Qwen/Qwen2.5-Omni-7B"
 if [ ${FLASH_ATTN} -eq 1 ]; then
     WEB_DEMO_ARGS+=" --flash-attn2"
 fi
 
 sudo docker run --gpus all -d --restart always --name ${CONTAINER_NAME} \
-    -v /var/run/docker.sock:/var/run/docker.sock -p ${PORT}:80 \
+    -v /var/run/docker.sock:/var/run/docker.sock -p ${PORT}:8901 \
     --mount type=bind,source=${QWEN_CHECKPOINT_PATH},target=/data/shared/Qwen/Qwen2.5-Omni-7B \
     -it ${IMAGE_NAME} \
     python web_demo.py ${WEB_DEMO_ARGS} && {
