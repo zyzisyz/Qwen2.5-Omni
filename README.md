@@ -694,7 +694,7 @@ conversation = [
 USE_AUDIO_IN_VIDEO = True
 
 # Preparation for inference
-text = processor.apply_chat_template(conversation, add_generation_prompt=True, tokenize=Fals)
+text = processor.apply_chat_template(conversation, add_generation_prompt=True, tokenize=False)
 audios, images, videos = process_mm_info(conversation, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 inputs = processor(text=text, audios=audios, images=images, videos=videos, return_tensors="pt", padding=True, use_audio_in_video=USE_AUDIO_IN_VIDEO)
 inputs = inputs.to(model.device).to(model.dtype)
@@ -723,7 +723,7 @@ Note: The table above presents the theoretical minimum memory requirements for i
 </details>  
 
 <details>
-<summary>Video ULR resource usage</summary>
+<summary>Video URL resource usage</summary>
 
 Video URL compatibility largely depends on the third-party library version. The details are in the table below. Change the backend by `FORCE_QWENVL_VIDEO_READER=torchvision` or `FORCE_QWENVL_VIDEO_READER=decord` if you prefer not to use the default one.
 
