@@ -23,6 +23,7 @@ We release **Qwen2.5-Omni**, the new flagship end-to-end multimodal model in the
 
 
 ## News
+* 2025.04.02: ⭐️⭐️⭐️ Qwen2.5-Omni reaches top-1 on Hugging Face Trending! 
 * 2025.03.29: ⭐️⭐️⭐️ Qwen2.5-Omni reaches top-2 on Hugging Face Trending! 
 * 2025.03.26: Real-time interaction with Qwen2.5-Omni is available on [Qwen Chat](https://chat.qwen.ai/). Let's start this amazing journey now!
 * 2025.03.26: We have released the [Qwen2.5-Omni](https://huggingface.co/collections/Qwen/qwen25-omni-67de1e5f0f9464dc6314b36e). For more details, please check our [blog](https://qwenlm.github.io/blog/qwen2.5-omni/)!
