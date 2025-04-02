@@ -22,6 +22,7 @@
 </a>
 
 ## 新闻
+* 2025.03.29: ⭐️⭐️⭐️ Qwen2.5-Omni 达到 Hugging Face Trending 榜的 top-1! 
 * 2025.03.29: ⭐️⭐️⭐️ Qwen2.5-Omni 达到 Hugging Face Trending 榜的 top-2! 
 * 2025.03.26: 与Qwen2.5-Omni的实时交互体验已经在 [Qwen Chat](https://chat.qwen.ai/) 上线，欢迎体验!
 * 2025.03.26: 我们发布了 [Qwen2.5-Omni](https://huggingface.co/collections/Qwen/qwen25-omni-67de1e5f0f9464dc6314b36e). 对于更多的信息请访问我们的[博客](https://qwenlm.github.io/zh/blog/qwen2.5-omni/)!
